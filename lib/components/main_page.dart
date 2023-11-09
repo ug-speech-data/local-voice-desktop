@@ -5,6 +5,7 @@ import 'package:local_voice_desktop/components/side_bar_menu.dart';
 class MainPage extends StatelessWidget {
   const MainPage({
     super.key,
+    required String title,
   });
 
   @override
