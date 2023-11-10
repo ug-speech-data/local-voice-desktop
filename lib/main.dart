@@ -1,8 +1,12 @@
+// import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/pages/home_page.dart';
+import 'package:media_kit/media_kit.dart';
 
 void main() {
+  // DartVLC.initialize();
+  MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
 

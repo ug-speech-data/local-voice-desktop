@@ -20,9 +20,16 @@ class RemoteServices {
     return false;
   }
 
+  static Future<bool> removeAuthHeader() async {
+    dio.options.headers.remove("Authorization");
+    return false;
+  }
+
   // User login
   static Future<AuthResponse?> loginUser(
       String emailAddress, String password) async {
+    removeAuthHeader();
+
     var data = {'email_address': emailAddress, 'password': password};
     final response = await dio.post("$BASE_URL/auth/login/", data: data);
     if (response.statusCode == 200) {
