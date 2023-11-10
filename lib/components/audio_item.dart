@@ -1,62 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:local_voice_desktop/controllers/audios_controller.dart';
+import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 
-class AudioItem extends StatefulWidget {
-  const AudioItem({Key? key}) : super(key: key);
+class AudioItem extends StatelessWidget {
+  AudioItem({Key? key, required this.audio}) : super(key: key);
+  final TranscriptionAudio audio;
 
-  @override
-  _AudioItemState createState() => _AudioItemState();
-}
-
-class _AudioItemState extends State<AudioItem> {
-  Color backgroundColor = colorSidebar;
-
-  void _hoverContainer(PointerEvent details) {
-    setState(() {
-      backgroundColor = colorSidebar.withAlpha(10);
-    });
-  }
-
-  void _unHoverContainer(PointerEvent details) {
-    setState(() {
-      backgroundColor = colorSidebar;
-    });
-  }
+  final AudiosController audiosController = Get.put(AudiosController());
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-        onEnter: _hoverContainer,
-        onExit: _unHoverContainer,
-        child: Container(
-          margin: const EdgeInsets.all(2),
-          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-          color: backgroundColor,
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "387393",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "https://sdapi.ugspeechdata.com/asset/audo.mp3",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text("ak_gh"),
-              Row(
-                children: [
-                  Container(
-                      child: Text(
-                    "UPLOADED",
-                    style: TextStyle(fontSize: textSmall),
-                  )),
-                ],
-              )
-            ],
+    return Container(
+        margin: const EdgeInsets.all(2),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+        width: double.infinity,
+        child: Material(
+          child: InkWell(
+            onTap: () {
+              audiosController.currentAudio.value = [audio];
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  audio.id.toString(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  audio.audioUrl,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(audio.locale),
+                const Row(
+                  children: [
+                    Text(
+                      "UPLOADED",
+                      style: TextStyle(fontSize: textSmall),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
+          color: Colors.transparent,
         ));
   }
 }

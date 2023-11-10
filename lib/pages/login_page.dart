@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/controllers/auth_controller.dart';
 import 'package:local_voice_desktop/pages/home_page.dart';
+import 'package:local_voice_desktop/pages/menu_page.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                                   // If login succeeds
                                   if (value?.token != null) {
                                     _saveToken(value!.token!);
-                                    Get.to(MyHomePage(title: ""));
+                                    Get.to(const MenuPage());
                                   } else if (value?.errorMessage != null) {
                                     Get.snackbar(
                                         "Failed!", value!.errorMessage!,

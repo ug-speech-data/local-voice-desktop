@@ -1,13 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:local_voice_desktop/components/audio_item.dart';
+import 'package:local_voice_desktop/controllers/audios_controller.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
+import 'package:getwidget/getwidget.dart';
 
 class SideBarMenu extends StatelessWidget {
-  const SideBarMenu({
+  SideBarMenu({
     super.key,
   });
+
+  final AudiosController audiosController = Get.put(AudiosController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +30,26 @@ class SideBarMenu extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      child: const Row(
-                        children: [
-                          Icon(Icons.download_for_offline),
-                          Text("Download")
-                        ],
-                      ),
-                    ),
-                  ),
+                  Obx(() => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: OutlinedButton(
+                          onPressed: !audiosController.isLoading.value
+                              ? () {
+                                  audiosController
+                                      .getAudiosToTranscribe()
+                                      .then((value) {});
+                                }
+                              : null,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.download_for_offline),
+                              audiosController.isLoading.value
+                                  ? const Text("Requesting...")
+                                  : const Text("Download")
+                            ],
+                          ),
+                        ),
+                      )),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
                     child: OutlinedButton(
@@ -65,20 +78,25 @@ class SideBarMenu extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(onPressed: () {}, child: Icon(Icons.sort_outlined))
+              TextButton(
+                  onPressed: () {}, child: const Icon(Icons.sort_outlined))
             ],
           ),
           Expanded(
             child: Container(
               color: Colors.grey[200],
               width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AudioItem(),
-                  AudioItem(),
-                  AudioItem(),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...audiosController.audios
+                          .map((audio) => AudioItem(audio: audio))
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

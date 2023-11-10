@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio_lib;
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/controllers/auth_controller.dart';
 import 'package:local_voice_desktop/models/auth_response.dart';
@@ -6,7 +6,7 @@ import 'package:local_voice_desktop/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoteServices {
-  static var dio = Dio();
+  static var dio = dio_lib.Dio();
   AuthController authController = Get.put(AuthController());
 
   static Future<bool> setupAuthHeader() async {
@@ -41,5 +41,11 @@ class RemoteServices {
   // User logout
   static Future<void> logoutUser() async {
     await dio.post("$BASE_URL/auth/logout/");
+  }
+
+  // Get audios to transcribe
+  static Future<dio_lib.Response> getAudiosToTranscribe() async {
+    await setupAuthHeader();
+    return await dio.get("$BASE_URL/get-assigned-audios-to-transcribe");
   }
 }
