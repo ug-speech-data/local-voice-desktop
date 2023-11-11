@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:isolated_worker/isolated_worker.dart';
 import 'package:local_voice_desktop/dao/database.dart';
 import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/services/remote_services.dart';
@@ -78,14 +77,6 @@ class AudiosController extends GetxController {
 
   void checkUpdateUndownloadedAudios() {
     void _checkUpdateUndownloadedAudios(void _) {
-      print("_checkUpdateUndownloadedAudios");
-      // var rootToken = RootIsolateToken.instance;
-      // if (rootIsolateToken != null) {
-      //   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-      // } else {
-      //   print("rootToken");
-      // }
-
       getDownloadPendingAudios().then((audios) {
         for (TranscriptionAudio audio in audios) {
           downloadFile(audio.audioUrl).then((path) {
@@ -106,11 +97,9 @@ class AudiosController extends GetxController {
     }
 
     _checkUpdateUndownloadedAudios(null);
-
-    // IsolatedWorker().run(_checkUpdateUndownloadedAudios, null);
   }
 
-  static void _uploadTranscribedAudios(SendPort sendPort) {
+  static void _uploadTranscribedAudios() {
     // Send result back to the main UI isolate
     getTranscribedAudios().then((audios) {
       for (TranscriptionAudio audio in audios) {
@@ -122,12 +111,10 @@ class AudiosController extends GetxController {
         });
       }
     });
-    sendPort.send('Task completed successfully!');
   }
 
   Future<void> uploadTranscribedAudios() async {
-    // final ReceivePort port = ReceivePort();
-    // await Isolate.spawn(_uploadTranscribedAudios, port.sendPort);
+    _uploadTranscribedAudios();
   }
 
   Future<void> clearAudios() async {

@@ -93,9 +93,9 @@ class AppNavBar extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  authController.username.isNotEmpty ? "Logout" : "Login",
+                  style: const TextStyle(color: Colors.white),
                 ),
               )
             ],
