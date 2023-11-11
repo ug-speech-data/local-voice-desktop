@@ -85,19 +85,34 @@ class AppNavBar extends StatelessWidget {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
-                  );
-                },
-                child: Text(
-                  authController.username.isNotEmpty ? "Logout" : "Login",
-                  style: const TextStyle(color: Colors.white),
-                ),
-              )
+              authController.username.isNotEmpty
+                  ? TextButton(
+                      onPressed: () {
+                        authController.logoutUser();
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.white),
+                      ))
+                  : TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
             ],
           ),
         ],

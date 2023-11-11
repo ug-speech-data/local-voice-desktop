@@ -20,6 +20,7 @@ class AuthController extends GetxController {
     prefs.remove("token");
     prefs.remove("authResponse");
     authResponse.value = AuthResponse();
+    username.value = "";
 
     try {
       await RemoteServices.logoutUser();
@@ -51,6 +52,7 @@ class AuthController extends GetxController {
       AuthResponse? response =
           await RemoteServices.loginUser(emailAddress, password);
       authResponse.value = response;
+      getUserName();
       return response;
     } on Exception catch (e) {
       print("Exception $e");
