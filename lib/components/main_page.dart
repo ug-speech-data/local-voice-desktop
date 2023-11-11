@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_voice_desktop/components/page_content.dart';
+import 'package:local_voice_desktop/components/transcription_page.dart';
 import 'package:local_voice_desktop/components/side_bar_menu.dart';
 
 class MainPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class MainPage extends StatelessWidget {
       children: [
         SideBarMenu(),
         Expanded(
-          child: PageContent(),
+          child: TranscriptionPage(),
         ),
       ],
     );

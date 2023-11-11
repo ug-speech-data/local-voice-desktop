@@ -14,7 +14,7 @@ class AudioItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         margin: const EdgeInsets.all(2),
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         width: double.infinity,
         child: Material(
           child: InkWell(
@@ -34,6 +34,12 @@ class AudioItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(audio.locale),
+                Text(
+                  audio.text,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 10, color: colorMain),
+                ),
                 const Row(
                   children: [
                     Text(

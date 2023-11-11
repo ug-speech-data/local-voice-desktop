@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:local_voice_desktop/components/audio_item.dart';
 import 'package:local_voice_desktop/controllers/audios_controller.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
-import 'package:getwidget/getwidget.dart';
 
 class SideBarMenu extends StatelessWidget {
   SideBarMenu({
@@ -84,7 +83,7 @@ class SideBarMenu extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              color: Colors.grey[200],
+              color: Colors.grey[100],
               width: double.infinity,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -92,8 +91,13 @@ class SideBarMenu extends StatelessWidget {
                   () => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...audiosController.audios
-                          .map((audio) => AudioItem(audio: audio))
+                      ...audiosController.audios.map((audio) => Container(
+                          color: audiosController.currentAudio.isNotEmpty &&
+                                  audiosController.currentAudio[0].id ==
+                                      audio.id
+                              ? colorMain.withAlpha(50)
+                              : null,
+                          child: AudioItem(audio: audio)))
                     ],
                   ),
                 ),
