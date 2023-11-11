@@ -4,6 +4,7 @@ import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 var logger = Logger();
@@ -17,7 +18,7 @@ Future<Database> getDatabase() async {
   if (db == null || pathUri == null) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-    pathUri = join(await getDatabasesPath(), dbName);
+    pathUri = join((await getApplicationDocumentsDirectory()).path, dbName);
     File(pathUri!).create(recursive: true);
 
     logger.log(Level.info, "Opening DB @ $pathUri");

@@ -7,6 +7,8 @@ import 'package:media_kit/media_kit.dart';
 
 Future<void> main() async {
   MediaKit.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
   initData();
   Logger(
     filter: null, // Use the default LogFilter (-> only log in debug mode)
