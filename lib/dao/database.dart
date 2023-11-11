@@ -18,6 +18,8 @@ Future<Database> getDatabase() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     pathUri = join(await getDatabasesPath(), dbName);
+    File(pathUri!).create(recursive: true);
+
     logger.log(Level.info, "Opening DB @ $pathUri");
   }
   db = await databaseFactory.openDatabase(pathUri!);

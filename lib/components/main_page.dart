@@ -13,7 +13,7 @@ class MainPage extends StatelessWidget {
     return Row(
       children: [
         SideBarMenu(),
-        Expanded(
+        const Expanded(
           child: TranscriptionPage(),
         ),
       ],

@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                                   // If login succeeds
                                   if (value?.token != null) {
                                     _saveToken(value!.token!);
-                                    Get.to(const MenuPage());
+                                    Get.to(MenuPage());
                                   } else if (value?.errorMessage != null) {
                                     Get.snackbar(
                                         "Failed!", value!.errorMessage!,
