@@ -37,7 +37,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
   @override
   void didUpdateWidget(AudioPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final playable = Media(oldWidget.audio!.audioUrl);
+    final playable = Media(widget.audio!.getPlayableUrl());
     player.open(playable, play: false);
     setState(() {
       fullyPlayed = false;

@@ -17,6 +17,7 @@ class AudioItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         width: double.infinity,
         child: Material(
+          color: Colors.transparent,
           child: InkWell(
             onTap: () {
               audiosController.currentAudio.value = [audio];
@@ -26,32 +27,37 @@ class AudioItem extends StatelessWidget {
               children: [
                 Text(
                   audio.id.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   audio.audioUrl,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: audio.audioDownloadStatus.toUpperCase() ==
+                            AudioDownloadStatus.downloaded.value
+                        ? colorSuccess.withGreen(130).withBlue(100)
+                        : colorError.withBlue(250),
+                  ),
                 ),
                 Text(audio.locale),
                 Text(
-                  audio.text,
+                  audio.getText(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: TextStyle(fontSize: 10, color: colorMain),
+                  style: const TextStyle(fontSize: 10, color: colorMain),
                 ),
-                const Row(
+                Row(
                   children: [
                     Text(
-                      "UPLOADED",
-                      style: TextStyle(fontSize: textSmall),
+                      "${audio.audioDownloadStatus.toUpperCase()} | ${audio.transcriptionStatus.toUpperCase()}",
+                      style: const TextStyle(fontSize: textSmall),
                     ),
                   ],
                 )
               ],
             ),
           ),
-          color: Colors.transparent,
         ));
   }
 }

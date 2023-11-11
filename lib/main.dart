@@ -1,12 +1,18 @@
-// import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_voice_desktop/dao/database.dart';
 import 'package:local_voice_desktop/pages/home_page.dart';
+import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 
-void main() {
-  // DartVLC.initialize();
+Future<void> main() async {
   MediaKit.ensureInitialized();
+  initData();
+  Logger(
+    filter: null, // Use the default LogFilter (-> only log in debug mode)
+    printer: PrettyPrinter(), // Use the PrettyPrinter to format and print log
+    output: null, // Use the default LogOutput (-> send everything to console)
+  );
   runApp(const MyApp());
 }
 

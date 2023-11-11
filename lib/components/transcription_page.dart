@@ -16,8 +16,24 @@ class TranscriptionPage extends StatefulWidget {
 
 class _TranscriptionPageState extends State<TranscriptionPage> {
   final AudiosController audiosController = Get.put(AudiosController());
-  late final TextEditingController _controller =
-      TextEditingController(text: audiosController.currentAudio[0].text);
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    if (audiosController.currentAudio.isNotEmpty) {
+      _controller = TextEditingController(
+          text: audiosController.currentAudio[0].getText());
+    } else {
+      _controller = TextEditingController(text: "");
+    }
+  }
+
+  void _nextAudio() {
+    var index =
+        audiosController.audios.indexOf(audiosController.currentAudio[0]);
+    audiosController.currentAudio[0] = audiosController.audios[index + 1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,21 +70,21 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
                           child: SizedBox(
                             width: 600,
                             child: Text(
-                              audiosController.currentAudio[0].text,
+                              audiosController.currentAudio[0].getText(),
                               maxLines: 10,
-                              style: const TextStyle(
-                                  fontSize: textSize,
-                                  fontStyle: FontStyle.italic),
+                              style: const TextStyle(fontSize: textSize),
                             ),
                           ),
                         ),
-                        if (audiosController.currentAudio[0].text
+                        if (audiosController.currentAudio[0]
+                            .getText()
                             .toString()
                             .isNotEmpty)
                           TextButton(
                             onPressed: () {
                               _controller.value = TextEditingValue(
-                                  text: audiosController.currentAudio[0].text);
+                                  text: audiosController.currentAudio[0]
+                                      .getText());
                             },
                             child: const Icon(Icons.edit),
                           ),
@@ -96,9 +112,9 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
                         cursorColor: Colors.black,
                         maxLines: 5,
                         controller: _controller,
-                        // initialValue: audiosController.currentAudio[0].text,
                         onChanged: (value) {
-                          audiosController.currentAudio[0].text = value;
+                          audiosController.currentAudio[0].transcribedText =
+                              value;
                         },
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -119,19 +135,35 @@ class _TranscriptionPageState extends State<TranscriptionPage> {
                       children: [
                         OutlinedButton(
                             onPressed: () {
-                              var index = audiosController.audios
-                                  .indexOf(audiosController.currentAudio[0]);
-                              audiosController.currentAudio[0] =
-                                  audiosController.audios[index + 1];
+                              _nextAudio();
                             },
                             child: const Text("Skip")),
                         OutlinedButton(
-                            onPressed: () {}, child: const Text("Save")),
+                            onPressed: () {
+                              audiosController.updateAudioTranscription(
+                                  audiosController.currentAudio[0]);
+
+                              // Next Audio
+                              _nextAudio();
+                            },
+                            child: const Text("Save")),
                       ],
                     )
                   ],
                 )
-              : const Text("Please choose audio from the side menu."),
+              : const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Please choose an audio from the left side panel.",
+                        style: TextStyle(fontSize: textSize, color: colorGrey),
+                      ),
+                      Text("(*_*)")
+                    ],
+                  ),
+                ),
         ),
       );
     });

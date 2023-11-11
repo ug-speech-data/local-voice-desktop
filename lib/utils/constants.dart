@@ -15,3 +15,35 @@ const navHeight = 50.0;
 const textTitleSize = 25.0;
 const textSize = 18.0;
 const textSmall = 10.0;
+
+enum TranscriptionStatus { nnew, transcribed, uploaded }
+
+enum AudioDownloadStatus { pending, downloaded, retry, failed }
+
+extension TranscriptionStatusExtension on TranscriptionStatus {
+  String get value {
+    switch (this) {
+      case TranscriptionStatus.nnew:
+        return "NEW";
+      case TranscriptionStatus.transcribed:
+        return "TRANSCRIBED";
+      case TranscriptionStatus.uploaded:
+        return "UPLOADED";
+    }
+  }
+}
+
+extension AudioDownloadStatusExtension on AudioDownloadStatus {
+  String get value {
+    switch (this) {
+      case AudioDownloadStatus.pending:
+        return "NEW";
+      case AudioDownloadStatus.downloaded:
+        return "DOWNLOADED";
+      case AudioDownloadStatus.retry:
+        return "RETRY";
+      case AudioDownloadStatus.failed:
+        return "FAILED";
+    }
+  }
+}
