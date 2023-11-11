@@ -7,6 +7,13 @@ class AuthController extends GetxController {
   var isLoading = true.obs;
   Rx<AuthResponse?> authResponse = AuthResponse().obs;
   RxString userResponse = "".obs;
+  RxString username = "".obs;
+
+  @override
+  void onInit() async {
+    await getUserName();
+    super.onInit();
+  }
 
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -19,16 +26,22 @@ class AuthController extends GetxController {
     } on Exception catch (_) {}
   }
 
-  String getUserName() {
-    String? surname = authResponse.value?.user?.surname;
-    String? otherNames = authResponse.value?.user?.otherNames;
+  Future<String> getUserName() async {
     String fullname = "";
-    if (surname != null) {
-      fullname += fullname;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authRes = prefs.getString('authResponse');
+    if (authRes != null) {
+      var response = authResponseFromJson(authRes);
+      String? surname = response.user?.surname;
+      String? otherNames = response.user?.otherNames;
+      if (surname != null) {
+        fullname += fullname;
+      }
+      if (otherNames != null) {
+        fullname += " $otherNames";
+      }
     }
-    if (otherNames != null) {
-      fullname += " $otherNames";
-    }
+    username.value = fullname;
     return fullname;
   }
 

@@ -22,6 +22,7 @@ class TranscriptionAudio {
   String transcribedText;
   final String locale;
   final int duration;
+  final String taskType;
   String audioDownloadStatus;
   String transcriptionStatus;
 
@@ -35,6 +36,7 @@ class TranscriptionAudio {
     required this.locale,
     required this.duration,
     required this.audioDownloadStatus,
+    required this.taskType,
     required this.transcriptionStatus,
   });
 
@@ -62,6 +64,7 @@ class TranscriptionAudio {
           transcribedText: json["transcribed_text"] ?? "",
           locale: json["locale"],
           duration: json["duration"],
+          taskType: json["task_type"] ?? TaskType.trancription.value,
           audioDownloadStatus: json["audio_download_status"] ??
               AudioDownloadStatus.pending.value,
           transcriptionStatus:
@@ -76,6 +79,7 @@ class TranscriptionAudio {
         "transcribed_text": transcribedText,
         "locale": locale,
         "duration": duration,
+        "task_type": taskType,
         "audio_download_status": audioDownloadStatus,
         "transcription_status": transcriptionStatus,
       };

@@ -16,7 +16,7 @@ class AudiosController extends GetxController {
   RxList currentAudio = [].obs;
   var isLoading = false.obs;
   var isRefreshingFromDb = false.obs;
-  var errorMessage = "dddod".obs;
+  var errorMessage = "".obs;
 
   @override
   void onInit() async {

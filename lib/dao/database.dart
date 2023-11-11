@@ -38,6 +38,7 @@ Future<void> initData() async {
       transcribed_text TEXT,
       locale TEXT,
       duration INTEGER,
+      task_type TEXT,
       audio_download_status TEXT,
       transcription_status TEXT
   )

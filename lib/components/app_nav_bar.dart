@@ -19,38 +19,39 @@ class AppNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Padding(
-            padding: EdgeInsets.all(5),
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Text("Transcribed Audios:",
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                    Text("34",
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Column(
-                  children: [
-                    Text("Trans. Resolutions:",
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                    Text("100",
-                        style: TextStyle(
-                          color: Colors.white,
-                        )),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.all(5),
+          //   child: Row(
+          //     children: [
+          //       Column(
+          //         children: [
+          //           Text("Transcribed Audios:",
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //               )),
+          //           Text("34",
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //               )),
+          //         ],
+          //       ),
+          //       SizedBox(width: 20),
+          //       Column(
+          //         children: [
+          //           Text("Trans. Resolutions:",
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //               )),
+          //           Text("100",
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //               )),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          Spacer(),
           Row(
             children: [
               ElevatedButton(
@@ -75,10 +76,10 @@ class AppNavBar extends StatelessWidget {
               ),
               Obx(
                 () => TextButton(
-                  onPressed: () {},
+                  onPressed: null,
                   child: Text(
-                    "Hi ${authController.getUserName()}",
-                    style: TextStyle(
+                    "Hi ${authController.username}",
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),

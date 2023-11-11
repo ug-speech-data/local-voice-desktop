@@ -18,6 +18,8 @@ const textSmall = 10.0;
 
 enum TranscriptionStatus { nnew, transcribed, uploaded }
 
+enum TaskType { trancription, resolution }
+
 enum AudioDownloadStatus { pending, downloaded, retry, failed }
 
 extension TranscriptionStatusExtension on TranscriptionStatus {
@@ -44,6 +46,17 @@ extension AudioDownloadStatusExtension on AudioDownloadStatus {
         return "RETRY";
       case AudioDownloadStatus.failed:
         return "FAILED";
+    }
+  }
+}
+
+extension TaskTypeExtension on TaskType {
+  String get value {
+    switch (this) {
+      case TaskType.trancription:
+        return "TRANSCRIPTION";
+      case TaskType.resolution:
+        return "RESOLUTION";
     }
   }
 }
