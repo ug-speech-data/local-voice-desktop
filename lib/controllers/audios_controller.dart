@@ -31,6 +31,9 @@ class AudiosController extends GetxController {
     isRefreshingFromDb(false);
     audios.value = auds;
 
+    // Try downloading pending mp3 files.
+    await checkUpdateUndownloadedAudios();
+
     logger.log(Level.info, "Found ${auds.length} audios in db.");
   }
 
@@ -99,14 +102,16 @@ class AudiosController extends GetxController {
   static void _uploadTranscribedAudios(SendPort sendPort) {
     // Send result back to the main UI isolate
     getTranscribedAudios().then((audios) {
-      for (TranscriptionAudio audio in audios) {
-        RemoteServices.uploadTranscription(audio).then((response) async {
-          if (response.statusCode == 200) {
-            audio.transcriptionStatus = TranscriptionStatus.uploaded.value;
-            await updateAudio(audio);
-          }
-        });
-      }
+      print("uploading transcription");
+
+      // for (TranscriptionAudio audio in audios) {
+      //   RemoteServices.uploadTranscription(audio).then((response) async {
+      //     if (response.statusCode == 200) {
+      //       audio.transcriptionStatus = TranscriptionStatus.uploaded.value;
+      //       await updateAudio(audio);
+      //     }
+      //   });
+      // }
     });
     sendPort.send('Task completed successfully!');
   }

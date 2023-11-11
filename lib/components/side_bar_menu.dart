@@ -45,7 +45,7 @@ class SideBarMenu extends StatelessWidget {
                             const Icon(Icons.download_for_offline),
                             audiosController.isLoading.value
                                 ? const Text("Requesting...")
-                                : const Text("Download")
+                                : const Text("Get Audios")
                           ],
                         ),
                       ),
@@ -53,8 +53,17 @@ class SideBarMenu extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
-                        onPressed: () {},
-                        child: const Icon(Icons.upload_file_outlined),
+                        onPressed: () {
+                          audiosController.uploadTranscribedAudios();
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(Icons.upload_file_outlined),
+                            audiosController.isLoading.value
+                                ? const Text("Uploading..")
+                                : const Text("Upload Texts...")
+                          ],
+                        ),
                       ),
                     ),
                     Padding(

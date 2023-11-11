@@ -7,7 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 var logger = Logger();
 
 var transcriptionTable = "transcription_audios";
-var dbName = "localvoicev.sqlite3";
+var dbName = "localvoice.sqlite3";
 
 Database? db;
 String? pathUri;
@@ -48,13 +48,15 @@ Future<void> insertAudioAll(List<TranscriptionAudio> audios) async {
   logger.log(Level.info, "Inserting ${audios.length} audios.");
   final db = await getDatabase();
 
-  audios.asMap().forEach((index, audio) async {
-    logger.log(Level.info, "Inserting $index of ${audios.length} audios.");
+  for (var index = 0; index < audios.length; index++) {
+    TranscriptionAudio audio = audios[index];
+    logger.log(
+        Level.info, "Inserting ${index + 1} of ${audios.length} audios.");
     await db.insert(transcriptionTable, audio.toJson(),
         conflictAlgorithm: ConflictAlgorithm.ignore);
-  });
-  logger.log(Level.info, "Insertion completed.");
+  }
   db.close();
+  logger.log(Level.info, "Insertion completed.");
 }
 
 Future<void> updateAudio(TranscriptionAudio audio) async {
@@ -69,7 +71,7 @@ Future<void> updateAudio(TranscriptionAudio audio) async {
     where: 'id = ?',
     whereArgs: [audio.id],
   );
-  db.close();
+  // db.close();
 }
 
 // A method that retrieves all the dogs from the dogs table.
@@ -80,7 +82,7 @@ Future<List<TranscriptionAudio>> getAudios() async {
   // Query the table for all The Dogs.
   final List<Map<String, dynamic>> maps = await db.query(
     transcriptionTable,
-    orderBy: "transcription_status ASC, id ASC",
+    orderBy: "audio_download_status ASC, transcription_status DESC, id ASC",
   );
   db.close();
 
