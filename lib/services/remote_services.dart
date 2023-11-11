@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' as dio_lib;
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/controllers/auth_controller.dart';
 import 'package:local_voice_desktop/models/auth_response.dart';
+import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,5 +55,14 @@ class RemoteServices {
   static Future<dio_lib.Response> getAudiosToTranscribe() async {
     await setupAuthHeader();
     return await dio.get("$BASE_URL/get-assigned-audios-to-transcribe");
+  }
+
+  // Get audios to transcribe
+  static Future<dio_lib.Response> uploadTranscription(
+      TranscriptionAudio audio) async {
+    await setupAuthHeader();
+
+    var data = {'id': audio.id, 'text': audio.transcribedText};
+    return await dio.post("$BASE_URL/submit-transcription/", data: data);
   }
 }

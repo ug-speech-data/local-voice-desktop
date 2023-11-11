@@ -9,12 +9,17 @@ var logger = Logger();
 var transcriptionTable = "transcription_audios";
 var dbName = "localvoicev.sqlite3";
 
+Database? db;
+String? pathUri;
 Future<Database> getDatabase() async {
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
-  String pathUri = join(await getDatabasesPath(), dbName);
-  logger.log(Level.info, "Opening DB @ $pathUri");
-  return await databaseFactory.openDatabase(pathUri);
+  if (db == null || pathUri == null) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    pathUri = join(await getDatabasesPath(), dbName);
+    logger.log(Level.info, "Opening DB @ $pathUri");
+  }
+  db = await databaseFactory.openDatabase(pathUri!);
+  return db!;
 }
 
 Future<void> initData() async {
@@ -49,6 +54,7 @@ Future<void> insertAudioAll(List<TranscriptionAudio> audios) async {
         conflictAlgorithm: ConflictAlgorithm.ignore);
   });
   logger.log(Level.info, "Insertion completed.");
+  db.close();
 }
 
 Future<void> updateAudio(TranscriptionAudio audio) async {
@@ -63,16 +69,20 @@ Future<void> updateAudio(TranscriptionAudio audio) async {
     where: 'id = ?',
     whereArgs: [audio.id],
   );
+  db.close();
 }
 
 // A method that retrieves all the dogs from the dogs table.
 Future<List<TranscriptionAudio>> getAudios() async {
-  // Get a reference to the database.
+  // // Get a reference to the database.
   final db = await getDatabase();
 
   // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps =
-      await db.query(transcriptionTable, orderBy: "id");
+  final List<Map<String, dynamic>> maps = await db.query(
+    transcriptionTable,
+    orderBy: "transcription_status ASC, id ASC",
+  );
+  db.close();
 
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
@@ -80,23 +90,42 @@ Future<List<TranscriptionAudio>> getAudios() async {
   });
 }
 
-// A method that retrieves all the dogs from the dogs table.
 Future<List<TranscriptionAudio>> getDownloadPendingAudios() async {
   // Get a reference to the database.
   final db = await getDatabase();
 
-  // Query the table for all The Dogs.
+  // Query the table for all the audios.
   final List<Map<String, dynamic>> maps = await db.query(
     transcriptionTable,
-    orderBy: "id",
+    orderBy: "transcription_status ASC",
     where: "audio_download_status=? OR audio_download_status=?",
     whereArgs: [
       AudioDownloadStatus.pending.value,
       AudioDownloadStatus.retry.value
     ],
   );
+  db.close();
 
-  // Convert the List<Map<String, dynamic> into a List<Dog>.
+  // Convert the List<Map<String, dynamic> into a list.
+  return List.generate(maps.length, (i) {
+    return TranscriptionAudio.fromJson(maps[i]);
+  });
+}
+
+Future<List<TranscriptionAudio>> getTranscribedAudios() async {
+  // Get a reference to the database.
+  final db = await getDatabase();
+
+  // Query the table for all the audios.
+  final List<Map<String, dynamic>> maps = await db.query(
+    transcriptionTable,
+    orderBy: "id ASC",
+    where: "transcription_status=?",
+    whereArgs: [TranscriptionStatus.transcribed.value],
+  );
+  db.close();
+
+  // Convert the List<Map<String, dynamic> into a list.
   return List.generate(maps.length, (i) {
     return TranscriptionAudio.fromJson(maps[i]);
   });

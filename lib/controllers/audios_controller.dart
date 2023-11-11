@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:isolate';
 
 import 'package:dio/dio.dart' as dio_lib;
@@ -70,7 +69,7 @@ class AudiosController extends GetxController {
     await refreshAudiosFromDb();
   }
 
-  static void _backgroundTask(SendPort sendPort) {
+  static void _checkUpdateUndownloadedAudios(SendPort sendPort) {
     // Send result back to the main UI isolate
     getDownloadPendingAudios().then((audios) {
       for (TranscriptionAudio audio in audios) {
@@ -94,6 +93,26 @@ class AudiosController extends GetxController {
 
   Future<void> checkUpdateUndownloadedAudios() async {
     final ReceivePort port = ReceivePort();
-    await Isolate.spawn(_backgroundTask, port.sendPort);
+    await Isolate.spawn(_checkUpdateUndownloadedAudios, port.sendPort);
+  }
+
+  static void _uploadTranscribedAudios(SendPort sendPort) {
+    // Send result back to the main UI isolate
+    getTranscribedAudios().then((audios) {
+      for (TranscriptionAudio audio in audios) {
+        RemoteServices.uploadTranscription(audio).then((response) async {
+          if (response.statusCode == 200) {
+            audio.transcriptionStatus = TranscriptionStatus.uploaded.value;
+            await updateAudio(audio);
+          }
+        });
+      }
+    });
+    sendPort.send('Task completed successfully!');
+  }
+
+  Future<void> uploadTranscribedAudios() async {
+    final ReceivePort port = ReceivePort();
+    await Isolate.spawn(_uploadTranscribedAudios, port.sendPort);
   }
 }
