@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 import 'package:logger/logger.dart';
@@ -71,7 +73,6 @@ Future<void> updateAudio(TranscriptionAudio audio) async {
     where: 'id = ?',
     whereArgs: [audio.id],
   );
-  // db.close();
 }
 
 // A method that retrieves all the dogs from the dogs table.
@@ -131,4 +132,42 @@ Future<List<TranscriptionAudio>> getTranscribedAudios() async {
   return List.generate(maps.length, (i) {
     return TranscriptionAudio.fromJson(maps[i]);
   });
+}
+
+Future<int> clearRedundantAudios() async {
+  // Get a reference to the database.
+  final db = await getDatabase();
+  var count = 0;
+
+  // Query the table for all the audios.
+  final List<Map<String, dynamic>> maps = await db.query(
+    transcriptionTable,
+    orderBy: "id ASC",
+    where: "transcription_status != ?",
+    whereArgs: [TranscriptionStatus.transcribed.value],
+  );
+
+  // Convert the List<Map<String, dynamic> into a list.
+  var audios = List.generate(maps.length, (i) {
+    return TranscriptionAudio.fromJson(maps[i]);
+  });
+
+  for (var audio in audios) {
+    if (audio.localAudioUrl != null) {
+      var file = File(audio.localAudioUrl!);
+      if (await file.exists()) {
+        file.delete(recursive: true);
+        count++;
+      }
+    }
+  }
+
+  // DB Deletion
+  await db.delete(
+    transcriptionTable,
+    where: "transcription_status != ?",
+    whereArgs: [TranscriptionStatus.transcribed.value],
+  );
+  db.close();
+  return count;
 }

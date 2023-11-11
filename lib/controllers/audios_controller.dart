@@ -16,7 +16,7 @@ class AudiosController extends GetxController {
   RxList currentAudio = [].obs;
   var isLoading = false.obs;
   var isRefreshingFromDb = false.obs;
-  var errorMessage = "".obs;
+  var errorMessage = "dddod".obs;
 
   @override
   void onInit() async {
@@ -119,5 +119,10 @@ class AudiosController extends GetxController {
   Future<void> uploadTranscribedAudios() async {
     final ReceivePort port = ReceivePort();
     await Isolate.spawn(_uploadTranscribedAudios, port.sendPort);
+  }
+
+  Future<void> clearAudios() async {
+    await clearRedundantAudios();
+    refreshAudiosFromDb();
   }
 }

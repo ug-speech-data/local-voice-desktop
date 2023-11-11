@@ -87,7 +87,9 @@ class SideBarMenu extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          audiosController.clearAudios();
+                        },
                         child: const Icon(Icons.delete_forever_outlined),
                       ),
                     ),
@@ -116,10 +118,10 @@ class SideBarMenu extends StatelessWidget {
             child: Container(
               color: Colors.grey[100],
               width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Obx(
-                  () => audiosController.audios.isNotEmpty
+              child: Obx(
+                () => SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: audiosController.audios.isNotEmpty
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthController extends GetxController {
   var isLoading = true.obs;
   Rx<AuthResponse?> authResponse = AuthResponse().obs;
+  RxString userResponse = "".obs;
 
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -16,6 +17,19 @@ class AuthController extends GetxController {
     try {
       await RemoteServices.logoutUser();
     } on Exception catch (_) {}
+  }
+
+  String getUserName() {
+    String? surname = authResponse.value?.user?.surname;
+    String? otherNames = authResponse.value?.user?.otherNames;
+    String fullname = "";
+    if (surname != null) {
+      fullname += fullname;
+    }
+    if (otherNames != null) {
+      fullname += " $otherNames";
+    }
+    return fullname;
   }
 
   Future<AuthResponse?> loginUser(String emailAddress, String password) async {

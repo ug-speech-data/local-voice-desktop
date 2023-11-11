@@ -14,6 +14,8 @@ class User {
     this.photo,
     this.createdAt,
     this.phone,
+    this.surname,
+    this.otherNames,
     this.emailAddress,
   });
 
@@ -21,11 +23,15 @@ class User {
   String? photo;
   DateTime? createdAt;
   String? phone;
+  String? surname;
+  String? otherNames;
   String? emailAddress;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         photo: json["photo"],
+        surname: json["surname"],
+        otherNames: json["other_names"],
         createdAt: DateTime.parse(json["created_at"]),
         phone: json["phone"],
         emailAddress: json["email_address"],
@@ -36,6 +42,8 @@ class User {
         "photo": photo,
         "created_at": createdAt?.toIso8601String(),
         "phone": phone,
+        "surname": surname,
+        "other_names": otherNames,
         "email_address": emailAddress,
       };
 }

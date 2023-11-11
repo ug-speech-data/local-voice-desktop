@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:local_voice_desktop/controllers/auth_controller.dart';
 import 'package:local_voice_desktop/pages/login_page.dart';
 import 'package:local_voice_desktop/pages/menu_page.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 
 class AppNavBar extends StatelessWidget {
-  const AppNavBar({
+  AppNavBar({
     super.key,
   });
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class AppNavBar extends StatelessWidget {
                     ),
                   );
                 },
-                child: Row(
+                child: const Row(
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5),
@@ -70,12 +73,14 @@ class AppNavBar extends StatelessWidget {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "Hi User!",
-                  style: TextStyle(
-                    color: Colors.white,
+              Obx(
+                () => TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Hi ${authController.getUserName()}",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
