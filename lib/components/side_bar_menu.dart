@@ -53,22 +53,6 @@ class SideBarMenu extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
-                        onPressed: () {
-                          audiosController.uploadTranscribedAudios();
-                        },
-                        child: Row(
-                          children: [
-                            const Icon(Icons.upload_file_outlined),
-                            audiosController.isLoading.value
-                                ? const Text("Uploading..")
-                                : const Text("Upload Texts...")
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: OutlinedButton(
                         onPressed: !audiosController.isRefreshingFromDb.value
                             ? () {
                                 audiosController.refreshAudiosFromDb();
@@ -88,9 +72,25 @@ class SideBarMenu extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
                         onPressed: () {
+                          audiosController.uploadTranscribedAudios();
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(Icons.upload_file_outlined),
+                            audiosController.isLoading.value
+                                ? const Text("Uploading..")
+                                : const Text("Upload Texts...")
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: OutlinedButton(
+                        onPressed: () {
                           audiosController.clearAudios();
                         },
-                        child: const Icon(Icons.delete_forever_outlined),
+                        child: const Text("Clear Audios"),
                       ),
                     ),
                   ],
