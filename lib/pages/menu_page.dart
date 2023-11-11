@@ -28,8 +28,8 @@ class MenuPage extends StatelessWidget {
               );
             },
             child: Container(
-              padding: EdgeInsets.all(10),
-              child: Text("Transcription"),
+              padding: const EdgeInsets.all(10),
+              child: const Text("Transcription"),
             ),
           ),
           InkWell(
@@ -43,8 +43,8 @@ class MenuPage extends StatelessWidget {
               );
             },
             child: Container(
-              padding: EdgeInsets.all(10),
-              child: Text("Transcription Resolution"),
+              padding: const EdgeInsets.all(10),
+              child: const Text("Transcription Resolution"),
             ),
           ),
           // Main page

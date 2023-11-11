@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/dao/database.dart';
 import 'package:local_voice_desktop/pages/home_page.dart';
@@ -6,16 +7,18 @@ import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 
 Future<void> main() async {
+  var rootToken = RootIsolateToken.instance!;
+  BackgroundIsolateBinaryMessenger.ensureInitialized(rootToken);
   MediaKit.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
 
-  initData();
   Logger(
-    filter: null, // Use the default LogFilter (-> only log in debug mode)
-    printer: PrettyPrinter(), // Use the PrettyPrinter to format and print log
-    output: null, // Use the default LogOutput (-> send everything to console)
+    filter: null,
+    printer: PrettyPrinter(),
+    output: null,
   );
   runApp(const MyApp());
+  initData();
 }
 
 class MyApp extends StatelessWidget {

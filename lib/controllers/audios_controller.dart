@@ -1,7 +1,10 @@
 import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:dio/dio.dart' as dio_lib;
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:isolated_worker/isolated_worker.dart';
 import 'package:local_voice_desktop/dao/database.dart';
 import 'package:local_voice_desktop/models/transcription_audio.dart';
 import 'package:local_voice_desktop/services/remote_services.dart';
@@ -10,6 +13,7 @@ import 'package:local_voice_desktop/utils/file_downloader.dart';
 import 'package:logger/logger.dart';
 
 var logger = Logger();
+RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
 
 class AudiosController extends GetxController {
   RxList audios = [].obs;
@@ -21,7 +25,7 @@ class AudiosController extends GetxController {
   @override
   void onInit() async {
     await refreshAudiosFromDb();
-    await checkUpdateUndownloadedAudios();
+    checkUpdateUndownloadedAudios();
     super.onInit();
   }
 
@@ -32,7 +36,7 @@ class AudiosController extends GetxController {
     audios.value = auds;
 
     // Try downloading pending mp3 files.
-    await checkUpdateUndownloadedAudios();
+    checkUpdateUndownloadedAudios();
 
     logger.log(Level.info, "Found ${auds.length} audios in db.");
   }
@@ -51,7 +55,7 @@ class AudiosController extends GetxController {
 
         // Insert audio into db.
         await insertAudioAll(values);
-        await checkUpdateUndownloadedAudios();
+        checkUpdateUndownloadedAudios();
         return values;
       } else {
         errorMessage.value = "Error: ${response.statusMessage}";
@@ -72,53 +76,58 @@ class AudiosController extends GetxController {
     await refreshAudiosFromDb();
   }
 
-  static void _checkUpdateUndownloadedAudios(SendPort sendPort) {
+  void checkUpdateUndownloadedAudios() {
+    void _checkUpdateUndownloadedAudios(void _) {
+      print("_checkUpdateUndownloadedAudios");
+      // var rootToken = RootIsolateToken.instance;
+      // if (rootIsolateToken != null) {
+      //   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+      // } else {
+      //   print("rootToken");
+      // }
+
+      getDownloadPendingAudios().then((audios) {
+        for (TranscriptionAudio audio in audios) {
+          downloadFile(audio.audioUrl).then((path) {
+            if (path != null) {
+              audio.audioDownloadStatus = AudioDownloadStatus.downloaded.value;
+              audio.localAudioUrl = path;
+            } else {
+              String newStatus =
+                  audio.audioDownloadStatus == AudioDownloadStatus.retry.value
+                      ? AudioDownloadStatus.failed.value
+                      : AudioDownloadStatus.retry.value;
+              audio.audioDownloadStatus = newStatus;
+            }
+            updateAudio(audio);
+          });
+        }
+      });
+    }
+
+    _checkUpdateUndownloadedAudios(null);
+
+    // IsolatedWorker().run(_checkUpdateUndownloadedAudios, null);
+  }
+
+  static void _uploadTranscribedAudios(SendPort sendPort) {
     // Send result back to the main UI isolate
-    getDownloadPendingAudios().then((audios) {
+    getTranscribedAudios().then((audios) {
       for (TranscriptionAudio audio in audios) {
-        downloadFile(audio.audioUrl).then((path) {
-          if (path != null) {
-            audio.audioDownloadStatus = AudioDownloadStatus.downloaded.value;
-            audio.localAudioUrl = path;
-          } else {
-            String newStatus =
-                audio.audioDownloadStatus == AudioDownloadStatus.retry.value
-                    ? AudioDownloadStatus.failed.value
-                    : AudioDownloadStatus.retry.value;
-            audio.audioDownloadStatus = newStatus;
+        RemoteServices.uploadTranscription(audio).then((response) async {
+          if (response.statusCode == 200) {
+            audio.transcriptionStatus = TranscriptionStatus.uploaded.value;
+            await updateAudio(audio);
           }
-          updateAudio(audio);
         });
       }
     });
     sendPort.send('Task completed successfully!');
   }
 
-  Future<void> checkUpdateUndownloadedAudios() async {
-    final ReceivePort port = ReceivePort();
-    await Isolate.spawn(_checkUpdateUndownloadedAudios, port.sendPort);
-  }
-
-  static void _uploadTranscribedAudios(SendPort sendPort) {
-    // Send result back to the main UI isolate
-    getTranscribedAudios().then((audios) {
-      print("uploading transcription");
-
-      // for (TranscriptionAudio audio in audios) {
-      //   RemoteServices.uploadTranscription(audio).then((response) async {
-      //     if (response.statusCode == 200) {
-      //       audio.transcriptionStatus = TranscriptionStatus.uploaded.value;
-      //       await updateAudio(audio);
-      //     }
-      //   });
-      // }
-    });
-    sendPort.send('Task completed successfully!');
-  }
-
   Future<void> uploadTranscribedAudios() async {
-    final ReceivePort port = ReceivePort();
-    await Isolate.spawn(_uploadTranscribedAudios, port.sendPort);
+    // final ReceivePort port = ReceivePort();
+    // await Isolate.spawn(_uploadTranscribedAudios, port.sendPort);
   }
 
   Future<void> clearAudios() async {
