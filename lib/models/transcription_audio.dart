@@ -59,7 +59,7 @@ class TranscriptionAudio {
           id: json["id"],
           name: json["name"],
           audioUrl: json["audio_url"],
-          localAudioUrl: null,
+          localAudioUrl: json["local_audio_url"],
           text: json["text"],
           transcribedText: json["transcribed_text"] ?? "",
           locale: json["locale"],
