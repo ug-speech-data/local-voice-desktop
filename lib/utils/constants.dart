@@ -39,7 +39,7 @@ extension AudioDownloadStatusExtension on AudioDownloadStatus {
   String get value {
     switch (this) {
       case AudioDownloadStatus.pending:
-        return "NEW";
+        return "PENDING";
       case AudioDownloadStatus.downloaded:
         return "DOWNLOADED";
       case AudioDownloadStatus.retry:

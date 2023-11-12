@@ -80,13 +80,15 @@ Future<void> updateAudio(TranscriptionAudio audio) async {
 }
 
 // A method that retrieves all the dogs from the dogs table.
-Future<List<TranscriptionAudio>> getAudios() async {
+Future<List<TranscriptionAudio>> getAudios(String taskType) async {
   // // Get a reference to the database.
   final db = await getDatabase();
 
   // Query the table for all The Dogs.
   final List<Map<String, dynamic>> maps = await db.query(
     transcriptionTable,
+    where: "task_type=?",
+    whereArgs: [taskType],
     orderBy: "audio_download_status ASC, transcription_status DESC, id ASC",
   );
   db.close();
@@ -127,8 +129,11 @@ Future<List<TranscriptionAudio>> getTranscribedAudios() async {
   final List<Map<String, dynamic>> maps = await db.query(
     transcriptionTable,
     orderBy: "id ASC",
-    where: "transcription_status=?",
-    whereArgs: [TranscriptionStatus.transcribed.value],
+    where: "transcription_status=? AND task_type=?",
+    whereArgs: [
+      TranscriptionStatus.transcribed.value,
+      TaskType.trancription.value
+    ],
   );
   db.close();
 
@@ -138,7 +143,29 @@ Future<List<TranscriptionAudio>> getTranscribedAudios() async {
   });
 }
 
-Future<int> clearRedundantAudios() async {
+Future<List<TranscriptionAudio>> getResolutionTranscribedAudios() async {
+  // Get a reference to the database.
+  final db = await getDatabase();
+
+  // Query the table for all the audios.
+  final List<Map<String, dynamic>> maps = await db.query(
+    transcriptionTable,
+    orderBy: "id ASC",
+    where: "transcription_status=? AND task_type=?",
+    whereArgs: [
+      TranscriptionStatus.transcribed.value,
+      TaskType.resolution.value
+    ],
+  );
+  db.close();
+
+  // Convert the List<Map<String, dynamic> into a list.
+  return List.generate(maps.length, (i) {
+    return TranscriptionAudio.fromJson(maps[i]);
+  });
+}
+
+Future<int> clearRedundantAudios(String taskType) async {
   // Get a reference to the database.
   final db = await getDatabase();
   var count = 0;
@@ -147,8 +174,8 @@ Future<int> clearRedundantAudios() async {
   final List<Map<String, dynamic>> maps = await db.query(
     transcriptionTable,
     orderBy: "id ASC",
-    where: "transcription_status != ?",
-    whereArgs: [TranscriptionStatus.transcribed.value],
+    where: "transcription_status != ? AND task_type=?",
+    whereArgs: [TranscriptionStatus.transcribed.value, taskType],
   );
 
   // Convert the List<Map<String, dynamic> into a list.

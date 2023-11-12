@@ -52,9 +52,28 @@ class RemoteServices {
   }
 
   // Get audios to transcribe
-  static Future<dio_lib.Response> getAudiosToTranscribe() async {
+  static Future<dio_lib.Response> getAudiosToTranscribe(bool completed) async {
     await setupAuthHeader();
     return await dio.get("$BASE_URL/get-assigned-audios-to-transcribe");
+  }
+
+  // Get transcriptions to resolve
+  static Future<dio_lib.Response> getTranscriptionsToResolve(
+      bool completed) async {
+    await setupAuthHeader();
+    return await dio.get("$BASE_URL/get-assigned-transcriptions-to-resolve/");
+  }
+
+  static Future<dio_lib.Response> submitTranscriptionResolution(
+      TranscriptionAudio audio) async {
+    await setupAuthHeader();
+    var data = {
+      'id': audio.id,
+      'text': audio.transcribedText,
+      "transcription_status": "accepted"
+    };
+    return await dio.post("$BASE_URL/get-transcription-to-resolve/",
+        data: data);
   }
 
   // Get audios to transcribe

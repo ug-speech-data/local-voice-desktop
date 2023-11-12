@@ -16,35 +16,71 @@ class MenuPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // App Bar
           AppNavBar(),
-          InkWell(
-            onTap: () {
-              appController.taskType.value = TaskType.trancription.value;
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(title: ""),
+          Expanded(
+            child: Center(
+              child: SizedBox(
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Would you like to do?"),
+                    const Spacer(),
+                    InkWell(
+                      onTap: () {
+                        appController.taskType.value =
+                            TaskType.trancription.value;
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) =>
+                                const MyHomePage(title: ""),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        width: 300,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        color: Colors.grey[100],
+                        child: const Text(
+                          "Transcription",
+                          style: TextStyle(
+                              color: Colors.black, fontSize: textSize),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        appController.taskType.value =
+                            TaskType.resolution.value;
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) =>
+                                const MyHomePage(title: ""),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        width: 300,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        color: Colors.grey[100],
+                        child: const Text(
+                          "Transcription Resolution",
+                          style: TextStyle(
+                              color: Colors.black, fontSize: textSize),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: const Text("Transcription"),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              appController.taskType.value = TaskType.resolution.value;
-
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(title: ""),
-                ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: const Text("Transcription Resolution"),
+              ),
             ),
           ),
           // Main page

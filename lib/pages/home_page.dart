@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           // App Bar
           AppNavBar(),
-          MainPage(
+          const MainPage(
             title: '',
           )
           // Main page

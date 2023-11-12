@@ -3,15 +3,28 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_voice_desktop/components/audio_item.dart';
+import 'package:local_voice_desktop/controllers/app_controller.dart';
 import 'package:local_voice_desktop/controllers/audios_controller.dart';
 import 'package:local_voice_desktop/utils/constants.dart';
 
-class SideBarMenu extends StatelessWidget {
-  SideBarMenu({
+class SideBarMenu extends StatefulWidget {
+  const SideBarMenu({
     super.key,
   });
 
+  @override
+  State<StatefulWidget> createState() => _SideBarMenuState();
+}
+
+class _SideBarMenuState extends State<SideBarMenu> {
   final AudiosController audiosController = Get.put(AudiosController());
+  final AppController appController = Get.put(AppController());
+
+  @override
+  void initState() {
+    super.initState();
+    audiosController.updateAudiosObs(appController.taskType.value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +48,8 @@ class SideBarMenu extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: !audiosController.isLoading.value
                             ? () {
-                                audiosController
-                                    .getAudiosToTranscribe()
-                                    .then((value) {});
+                                audiosController.getAssignedAudios(
+                                    appController.taskType.value);
                               }
                             : null,
                         child: Row(
@@ -55,7 +67,8 @@ class SideBarMenu extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: !audiosController.isRefreshingFromDb.value
                             ? () {
-                                audiosController.refreshAudiosFromDb();
+                                audiosController.refreshAudiosFromDb(
+                                    appController.taskType.value);
                               }
                             : null,
                         child: Row(
@@ -72,7 +85,8 @@ class SideBarMenu extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
                         onPressed: () {
-                          audiosController.uploadTranscribedAudios();
+                          audiosController.taskUploadTranscribedAudios(
+                              appController.taskType.value);
                         },
                         child: Row(
                           children: [
@@ -88,7 +102,8 @@ class SideBarMenu extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: OutlinedButton(
                         onPressed: () {
-                          audiosController.clearAudios();
+                          audiosController
+                              .clearAudios(appController.taskType.value);
                         },
                         child: const Text("Clear Audios"),
                       ),

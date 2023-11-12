@@ -22,7 +22,7 @@ class TranscriptionAudio {
   String transcribedText;
   final String locale;
   final int duration;
-  final String taskType;
+  String taskType;
   String audioDownloadStatus;
   String transcriptionStatus;
 

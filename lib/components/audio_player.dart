@@ -30,7 +30,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
   @override
   void initState() {
     super.initState();
-    final playable = Media(widget.audio!.audioUrl);
+    final playable = Media(widget.audio!.getPlayableUrl());
     player.open(playable, play: false);
   }
 

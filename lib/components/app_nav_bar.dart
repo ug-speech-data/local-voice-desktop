@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_voice_desktop/controllers/app_controller.dart';
 import 'package:local_voice_desktop/controllers/auth_controller.dart';
 import 'package:local_voice_desktop/pages/login_page.dart';
 import 'package:local_voice_desktop/pages/menu_page.dart';
@@ -10,6 +11,7 @@ class AppNavBar extends StatelessWidget {
     super.key,
   });
   final AuthController authController = Get.put(AuthController());
+  final AppController appController = Get.put(AppController());
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,13 @@ class AppNavBar extends StatelessWidget {
           const Spacer(),
           Row(
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  appController.taskType.value.toUpperCase(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
